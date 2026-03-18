@@ -1,0 +1,17 @@
+/* ===== Полоса прокрутки (скроллбар). ===== */
+::-webkit-scrollbar {
+    width: 5px; /* ширина для вертикального скролла */
+    height: 8px; /* высота для горизонтального скролла */
+    background-color: rgba(51, 62, 62, 0.15);
+}
+
+/* ===== Ползунок скроллбара. ===== */
+::-webkit-scrollbar-thumb {
+    background-color: #252d2d;
+    border-radius: 9em;
+    box-shadow: inset 1px 1px 10px #f3faf7;
+}
+
+.table-overflow {
+    overflow: auto;
+}
