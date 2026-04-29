@@ -45,7 +45,7 @@ class EduSubjects extends ActiveRecord
     {
         return [
             [['subject_teacher_id', 'subject_title'], 'required'],
-            [['subject_teacher_id'], 'integer'],
+            [['subject_teacher_id', 'cycle_id'], 'integer'],
             [['subject_title', 'subject_about'], 'string', 'max' => 255],
             [['subject_teacher_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['subject_teacher_id' => 'id']],
             [['temp_qualification_input'], 'safe'],
@@ -142,5 +142,10 @@ class EduSubjects extends ActiveRecord
     public function getSubjectQualifications()
     {
         return $this->hasMany(SubjectQualification::class, ['subject_id' => 'id']);
+    }
+
+    public function getCycle()
+    {
+        return $this->hasOne(EduCycle::class, ['id' => 'cycle_id']);
     }
 }

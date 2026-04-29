@@ -1,6 +1,7 @@
 <?php
 
 use app\modules\core\models\User;
+use app\modules\edu\models\EduCycle;
 use app\modules\edu\models\EduQualifications;
 use app\modules\edu\models\EduSubjects;
 use kartik\select2\Select2;
@@ -81,6 +82,25 @@ $this->params['breadcrumbs'][] = $this->title;
                 ],
                 'subject_title',
                 'subject_about',
+                [
+                    'attribute' => 'cycle_id',
+                    'format'    => 'raw',
+                    'filter'    => Select2::widget([
+                        'name'      => 'EduSubjectsSearch[cycle_id]',
+                        'value'     => $searchModel->cycle_id,
+                        'data'      => EduCycle::getCycleList(),
+                        'options'   => [
+                            'prompt' => '...',
+                        ],
+                        'pluginOptions' => [
+                            'allowClear' => true
+                        ],
+                    ]),
+                    'value' => function (EduSubjects $model) {
+                        return $model->cycle->name;
+                    }
+                ],
+                
                 [
                     'attribute' => 'status',
                     'format'    => 'raw',

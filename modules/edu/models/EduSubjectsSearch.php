@@ -19,7 +19,7 @@ class EduSubjectsSearch extends EduSubjects
     public function rules()
     {
         return [
-            [['id', 'subject_teacher_id', 'subject_qualification_id'], 'integer'],
+            [['id', 'subject_teacher_id', 'subject_qualification_id', 'cycle_id'], 'integer'],
             [['subject_title', 'subject_about', 'status'], 'safe'],
         ];
     }
@@ -60,9 +60,8 @@ class EduSubjectsSearch extends EduSubjects
         }
 
         // grid filtering conditions
-        $query->andFilterWhere([
-            'subject_teacher_id' => $this->subject_teacher_id
-        ]);
+        $query->andFilterWhere(['subject_teacher_id' => $this->subject_teacher_id])
+            ->andFilterWhere(['cycle_id'  => $this->cycle_id]);
 
         $query->andFilterWhere(['like', 'subject_title', $this->subject_title])
             ->andFilterWhere(['like', 'subject_about', $this->subject_about])
