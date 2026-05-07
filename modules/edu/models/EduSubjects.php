@@ -12,7 +12,6 @@ use yii\helpers\ArrayHelper;
  * This is the model class for table "{{%edu_subjects}}".
  *
  * @property int $id
- * @property int $subject_teacher_id Id учителя / преподавателя.
  * @property string $subject_title Название предмета.
  * @property string|null $subject_about О предмете.
  * @property string $status
@@ -24,6 +23,7 @@ use yii\helpers\ArrayHelper;
 class EduSubjects extends ActiveRecord
 {
     public $temp_qualification_input;
+    public $temp_group_input;
 
     const STATUS_ACTIVE         = 'active';
     const STATUS_DEACTIVATED    = 'deactivated';
@@ -44,11 +44,10 @@ class EduSubjects extends ActiveRecord
     public function rules()
     {
         return [
-            [['subject_teacher_id', 'subject_title'], 'required'],
-            [['subject_teacher_id', 'cycle_id'], 'integer'],
+            [['subject_title'], 'required'],
+            [['cycle_id'], 'integer'],
             [['subject_title', 'subject_about'], 'string', 'max' => 255],
-            [['subject_teacher_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['subject_teacher_id' => 'id']],
-            [['temp_qualification_input'], 'safe'],
+            [['temp_qualification_input', 'temp_group_input'], 'safe'],
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['status', 'in', 'range' => self::STATUS_ALL],
         ];
@@ -61,14 +60,15 @@ class EduSubjects extends ActiveRecord
     {
         return [
             'id'                        => Yii::t('app', 'ID'),
-            'subject_teacher_id'        => Yii::t('app', 'Учитель'),
             'subject_qualification_id'  => Yii::t('app', 'Квалификация'),
             'subject_title'             => Yii::t('app', 'Название'),
             'subject_about'             => Yii::t('app', 'О предмете'),
             'status'                    => Yii::t('app', 'Статус'),
             'temp_qualification_input'  => Yii::t('app', 'Квалификации'),
+            'temp_group_input'          => Yii::t('app', 'Группы'),
             'cycle_id'                  => Yii::t('app', 'Цикл'),
-            'subject_qualifications'    => Yii::t('app', 'Квалификация')
+            'subject_qualifications'    => Yii::t('app', 'Квалификация'),
+            'subject_groups'            => Yii::t('app', 'Группы')
         ];
     }
     
@@ -77,6 +77,11 @@ class EduSubjects extends ActiveRecord
         if (!empty($this->temp_qualification_input))
         {
             SubjectQualification::generateMultipleSubjectQualifications($this->id, $this->temp_qualification_input);
+        }
+
+        if (!empty($this->temp_group_input))
+        {
+            EduSubjectsGroups::generateMultipleSubjectGroups($this->id, $this->temp_group_input);
         }
 
         return parent::afterSave($insert, $changedAttributes);
@@ -118,16 +123,6 @@ class EduSubjects extends ActiveRecord
         return $this->hasOne(EduQualifications::class, ['id' => 'subject_qualification_id']);
     }
 
-    /**
-     * Gets query for [[SubjectTeacher]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getSubjectTeacher()
-    {
-        return $this->hasOne(User::class, ['id' => 'subject_teacher_id']);
-    }
-
     /* ===== Получить список предметов. ===== */
     public static function getSubjectsList(?string $status = self::STATUS_ACTIVE): array
     {
@@ -144,6 +139,11 @@ class EduSubjects extends ActiveRecord
     public function getSubjectQualifications()
     {
         return $this->hasMany(SubjectQualification::class, ['subject_id' => 'id']);
+    }
+
+    public function getSubjectGroups()
+    {
+        return $this->hasMany(EduSubjectsGroups::class, ['subject_id' => 'id']);
     }
 
     public function getCycle()

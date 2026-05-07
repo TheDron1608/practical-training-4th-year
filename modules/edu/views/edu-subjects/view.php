@@ -42,15 +42,21 @@ $this->params['breadcrumbs'][] = $this->title;
                 <table class="table">
                     <tbody>
                         <tr>
-                            <td><?= Yii::t('app', 'Преподаватель') ?></td>
-                            <td><?= $model->subjectTeacher->getUserFio() ?></td>
-                        </tr>
-                        <tr>
                             <td><?= Yii::t('app', 'Квалификации') ?></td>
                             <td>
                                 <ul class="list-group">
                                     <?php foreach ($model->subjectQualifications as $subjectQualification): ?>
                                         <li><?= $this->render('_subject-qualification', ['model' => $subjectQualification]) ?></li>
+                                    <?php endforeach ?>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><?= Yii::t('app', 'Группы') ?></td>
+                            <td>
+                                <ul class="list-group">
+                                    <?php foreach ($model->eduSubjectsGroups as $subjectGroup): ?>
+                                        <li><?= $this->render('_subject-group', ['model' => $subjectGroup]) ?></li>
                                     <?php endforeach ?>
                                 </ul>
                             </td>

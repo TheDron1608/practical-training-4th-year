@@ -1,5 +1,7 @@
 <?php
 use yii\helpers\Html;
+
+/** @var app\modules\edu\models\EduSubjects $model */
 ?>
 
 <div class="bg-light rounded-1 p-1 mb-1 justify-content-between">

@@ -1,6 +1,7 @@
 <?php
 
 use app\modules\core\models\User;
+use app\modules\core\models\Groups;
 use app\modules\edu\models\EduCycle;
 use app\modules\edu\models\EduQualifications;
 use app\modules\edu\models\EduSubjects;
@@ -39,13 +40,14 @@ $this->params['breadcrumbs'][] = $this->title;
             'columns' => [
                 ['class' => 'yii\grid\SerialColumn'],
 
+                'subject_title',
                 [
-                    'attribute' => 'subject_teacher_id',
+                    'attribute' => 'subject_groups',
                     'format'    => 'raw',
                     'filter'    => Select2::widget([
-                        'name'      => 'EduSubjectsSearch[subject_teacher_id]',
-                        'value'     => $searchModel->subject_teacher_id,
-                        'data'      => User::getUserList(null, User::ROLE_TEACHER),
+                        'name'      => 'EduSubjectsSearch[group_id]',
+                        'value'     => $searchModel->group_id,
+                        'data'      => Groups::getGroupList(),
                         'options'   => [
                             'prompt' => '...',
                         ],
@@ -54,7 +56,12 @@ $this->params['breadcrumbs'][] = $this->title;
                         ],
                     ]),
                     'value' => function (EduSubjects $model) {
-                        return $model->subjectTeacher->getUserFio();
+                        $result = "";
+                        foreach ($model->eduSubjectsGroups as $subjectGroup)
+                        {
+                            $result .= $this->render('_subject-group-no-teacher', ['model' => $subjectGroup, 'showTeacher' => false]);
+                        }
+                        return $result;
                     }
                 ],
                 [
@@ -80,8 +87,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         return $result;
                     }
                 ],
-                'subject_title',
-                'subject_about',
                 [
                     'attribute' => 'cycle_id',
                     'format'    => 'raw',

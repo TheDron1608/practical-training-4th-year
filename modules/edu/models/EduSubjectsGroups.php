@@ -4,6 +4,7 @@ namespace app\modules\edu\models;
 
 use app\modules\core\models\Groups;
 use Yii;
+use app\modules\core\models\User;
 use yii\db\ActiveRecord;
 
 /**
@@ -32,8 +33,9 @@ class EduSubjectsGroups extends ActiveRecord
     public function rules()
     {
         return [
-            [['subject_id', 'group_id'], 'required'],
-            [['subject_id', 'group_id'], 'integer'],
+            [['subject_id', 'group_id', 'teacher_id'], 'required'],
+            [['subject_id', 'group_id', 'teacher_id'], 'integer'],
+            [['teacher_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['teacher_id' => 'id']],
             [['group_id'], 'exist', 'skipOnError' => true, 'targetClass' => Groups::class, 'targetAttribute' => ['group_id' => 'id']],
             [['subject_id'], 'exist', 'skipOnError' => true, 'targetClass' => EduSubjects::class, 'targetAttribute' => ['subject_id' => 'id']],
         ];
@@ -49,6 +51,27 @@ class EduSubjectsGroups extends ActiveRecord
             'subject_id'    => Yii::t('app', 'Subject ID'),
             'group_id'      => Yii::t('app', 'Group ID'),
         ];
+    }
+
+    public static function generateMultipleSubjectGroups($subjectId, $subjectDatas)
+    {
+        //delete old relations
+        self::deleteMultipleSubjectGroups($subjectId);
+        
+        //create new relations
+        foreach ($subjectDatas as $subjectData)
+        {
+            $newRelation = new EduSubjectsGroups();
+            $newRelation->subject_id = $subjectId;
+            $newRelation->group_id = $subjectData['group_id'];
+            $newRelation->teacher_id = $subjectData['teacher_id'];
+            $newRelation->save();
+        }
+    }
+
+    public static function deleteMultipleSubjectGroups($subjectId)
+    {
+        self::deleteAll(['=', 'subject_id', $subjectId]);
     }
 
     /**
@@ -69,6 +92,11 @@ class EduSubjectsGroups extends ActiveRecord
     public function getSubject()
     {
         return $this->hasOne(EduSubjects::class, ['id' => 'subject_id']);
+    }
+
+    public function getTeacher()
+    {
+        return $this->hasOne(User::class, ['id' => 'teacher_id']);
     }
 
     /* ===== Получить ids предметов прикрепленных к группе. ===== */

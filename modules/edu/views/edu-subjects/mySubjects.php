@@ -1,5 +1,6 @@
 <?php
 
+use app\modules\core\models\Groups;
 use app\modules\edu\models\EduCycle;
 use app\modules\edu\models\EduQualifications;
 use app\modules\edu\models\EduSubjects;
@@ -37,50 +38,14 @@ $this->params['breadcrumbs'][] = $this->title;
             'columns' => [
                 ['class' => 'yii\grid\SerialColumn'],
 
-                [
-                    'attribute' => 'subject_qualifications',
-                    'format'    => 'raw',
-                    'filter'    => Select2::widget([
-                        'name'      => 'EduSubjectsSearch[subject_qualification_id]',
-                        'value'     => $searchModel->subject_qualification_id,
-                        'data'      => EduQualifications::getEduQualificationsList(),
-                        'options'   => [
-                            'prompt' => '...',
-                        ],
-                        'pluginOptions' => [
-                            'allowClear' => true
-                        ],
-                    ]),
-                    'value' => function (EduSubjects $model) {
-                        $result = "";
-                        foreach ($model->subjectQualifications as $subjectQualification)
-                        {
-                            $result .= $this->render('_subject-qualification', ['model' => $subjectQualification]);
-                        }
-                        return $result;
-                    }
-                ],
                 'subject_title',
                 [
                     'attribute' => 'subject_groups',
                     'format'    => 'raw',
-                    'value' => function (EduSubjects $model) {
-                        $result = "";
-                        foreach ($model->eduSubjectsGroups as $subjectGroup)
-                        {
-                            $result .= Html::a($subjectGroup->subject->subject_title, "");
-                        }
-                        return $result;
-                    }
-                ],
-                'subject_about',
-                [
-                    'attribute' => 'cycle_id',
-                    'format'    => 'raw',
                     'filter'    => Select2::widget([
-                        'name'      => 'EduSubjectsSearch[cycle_id]',
-                        'value'     => $searchModel->cycle_id,
-                        'data'      => EduCycle::getCycleList(),
+                        'name'      => 'EduSubjectsSearch[group_id]',
+                        'value'     => $searchModel->group_id,
+                        'data'      => Groups::getGroupList(),
                         'options'   => [
                             'prompt' => '...',
                         ],
@@ -89,17 +54,12 @@ $this->params['breadcrumbs'][] = $this->title;
                         ],
                     ]),
                     'value' => function (EduSubjects $model) {
-                        return $model->cycle->name;
-                    }
-                ],
-                
-                [
-                    'attribute' => 'status',
-                    'format'    => 'raw',
-                    'filter'    => EduSubjects::getStatusAll(),
-                    'visible'   => $isAdministrationSite ?? false,
-                    'value' => function (EduSubjects $model) {
-                        return EduSubjects::getStatusAll()[$model->status];
+                        $result = "";
+                        foreach ($model->eduSubjectsGroups as $subjectGroup)
+                        {
+                            $result .= $this->render('_subject-group-no-teacher', ['model' => $subjectGroup, 'showTeacher' => false]);
+                        }
+                        return $result;
                     }
                 ],
 

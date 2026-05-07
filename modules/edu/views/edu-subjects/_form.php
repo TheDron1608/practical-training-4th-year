@@ -1,9 +1,11 @@
 <?php
 
+use app\modules\core\models\Groups;
 use app\modules\core\models\User;
 use app\modules\edu\models\EduCycle;
 use app\modules\edu\models\EduQualifications;
 use app\modules\edu\models\EduSubjects;
+use app\modules\edu\models\EduSubjectsGroups;
 use kartik\select2\Select2;
 use unclead\multipleinput\MultipleInput;
 use yii\helpers\Html;
@@ -20,23 +22,14 @@ use yii\widgets\ActiveForm;
 
     <div class="row">
 
-        <div class="col-md-4 mb-3">
+        <div class="col-md-6 mb-3">
             <?= $form->field($model, 'subject_title')->textInput([
                 'class'     => 'input',
                 'maxlength' => true,
             ]) ?>
         </div>
 
-        <div class="col-md-4 mb-3">
-            <?= $form->field($model, 'subject_teacher_id')->widget(Select2::class, [
-                'data'      => User::getUserList(null, User::ROLE_TEACHER),
-                'options'   => [
-                    'prompt' => '...',
-                ]
-            ]) ?>
-        </div>
-
-        <div class="col-md-4 mb-3">
+        <div class="col-md-6 mb-3">
             <?= $form->field($model, 'cycle_id')->widget(Select2::class, [
                 'data'      => EduCycle::getCycleList(),
                 'options'   => [
@@ -73,6 +66,33 @@ use yii\widgets\ActiveForm;
                         'options' => [
                             'type' => 'number',
                             'min' => 1
+                        ]
+                    ],
+                ]
+            ]) ?>
+        </div>
+
+        <div class="mb-3">
+            <?= $form->field($model, 'temp_group_input')->widget(MultipleInput::class, [
+                'allowEmptyList'    => false,
+                'enableGuessTitle'  => true,
+                'addButtonPosition' => MultipleInput::POS_HEADER,
+                'columns' => [
+                    [
+                        'name'  => 'group_id',
+                        'title' => Yii::t('app', 'Группа'),
+                        'type'  => Select2::class,
+                        'options' => [
+                            'data' => Groups::getGroupList()
+                        ]
+                    ],
+
+                    [
+                        'name'  => 'teacher_id',
+                        'title' => Yii::t('app', 'Учитель'),
+                        'type'  => Select2::class,
+                        'options' => [
+                            'data' => User::getUserList(null, User::ROLE_TEACHER)
                         ]
                     ],
                 ]
