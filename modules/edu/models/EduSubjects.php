@@ -66,7 +66,9 @@ class EduSubjects extends ActiveRecord
             'subject_title'             => Yii::t('app', 'Название'),
             'subject_about'             => Yii::t('app', 'О предмете'),
             'status'                    => Yii::t('app', 'Статус'),
-            'temp_qualification_input'    => Yii::t('app', 'Квалификации')
+            'temp_qualification_input'  => Yii::t('app', 'Квалификации'),
+            'cycle_id'                  => Yii::t('app', 'Цикл'),
+            'subject_qualifications'    => Yii::t('app', 'Квалификация')
         ];
     }
     

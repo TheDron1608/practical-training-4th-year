@@ -48,14 +48,7 @@ class Menu
                     self::KEY_CODE  => false,
                     self::KEY_ICON  => '<i class="bi bi-receipt"></i>',
                     self::KEY_URL   => Url::to('/edu/edu-homework/index'),
-                ],
-
-                [
-                    self::KEY_LABEL => Yii::t('app', 'Предметы'),
-                    self::KEY_CODE  => false,
-                    self::KEY_ICON  => '<i class="bi bi-list-ul"></i>',
-                    self::KEY_URL   => Url::to('/edu/edu-subjects/index'),
-                ],
+                ]
             ];
 
             /** ===== НАЧАЛО: ДЛЯ УЧИТЕЛЕЙ / ПЕРЕПОДАВАТЕЛЕЙ. ===== */
@@ -85,6 +78,13 @@ class Menu
                     self::KEY_CODE  => false,
                     self::KEY_ICON  => '<i class="bi bi-grid-3x3-gap"></i>',
                     self::KEY_URL   => Url::to('/admin'),
+                ];
+
+                $sideBare[] = [
+                    self::KEY_LABEL => Yii::t('app', 'Предметы'),
+                    self::KEY_CODE  => false,
+                    self::KEY_ICON  => '<i class="bi bi-list-ul"></i>',
+                    self::KEY_URL   => Url::to('/edu/edu-subjects/index'),
                 ];
             }
             /** ===== КОНЕЦ: ДЛЯ АДМИНИСТРАЦИИ САЙТА. ===== */

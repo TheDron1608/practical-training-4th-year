@@ -2,6 +2,7 @@
 
 namespace app\modules\edu\models;
 
+use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\modules\edu\models\EduSubjects;
@@ -12,6 +13,8 @@ use app\modules\edu\models\EduSubjects;
 class EduSubjectsSearch extends EduSubjects
 {
     public $subject_qualification_id;
+    public $subject_group_id;
+    public $my_subjects_only = false;
 
     /**
      * {@inheritdoc}
@@ -60,7 +63,7 @@ class EduSubjectsSearch extends EduSubjects
         }
 
         // grid filtering conditions
-        $query->andFilterWhere(['subject_teacher_id' => $this->subject_teacher_id])
+        $query->andFilterWhere(['subject_teacher_id' =>  $this->my_subjects_only ? Yii::$app->user->id : $this->subject_teacher_id])
             ->andFilterWhere(['cycle_id'  => $this->cycle_id]);
 
         $query->andFilterWhere(['like', 'subject_title', $this->subject_title])

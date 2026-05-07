@@ -5,6 +5,7 @@ namespace app\modules\edu\controllers;
 use app\modules\core\models\User;
 use app\modules\edu\models\EduSubjects;
 use app\modules\edu\models\EduSubjectsSearch;
+use app\modules\edu\models\EduMySubjectsSearch;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -86,11 +87,11 @@ class EduSubjectsController extends Controller
         $getUserId = Yii::$app->user->id;
 
         $searchModel = new EduSubjectsSearch();
-        $searchModel->subject_teacher_id = $getUserId;
+        $searchModel->my_subjects_only = true;
 
         $dataProvider = $searchModel->search($this->request->queryParams);
 
-        return $this->render('index', [
+        return $this->render('mySubjects', [
             'searchModel'           => $searchModel,
             'dataProvider'          => $dataProvider,
             'getUserId'             => $getUserId,
