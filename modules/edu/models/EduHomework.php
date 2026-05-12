@@ -60,14 +60,13 @@ class EduHomework extends ActiveRecord
         ];
     }
 
-    public $homework_user_id;
     public $homework_files;
 
     public function rules()
     {
         return [
             [['homework_teacher_id', 'homework_subject_id', 'homework_title'], 'required'],
-            [['homework_teacher_id', 'homework_user_id', 'homework_group_id', 'homework_subject_id', 'homework_answer_file_id', 'created_at', 'updated_at'], 'integer'],
+            [['homework_teacher_id', 'homework_group_id', 'homework_subject_id', 'homework_answer_file_id', 'created_at', 'updated_at'], 'integer'],
             [['homework_file_ids', 'homework_deadline', 'homework_options'], 'safe'],
             [['homework_title'], 'string', 'max' => 512],
             [['homework_content'], 'string', 'max' => 8192],
@@ -179,24 +178,6 @@ class EduHomework extends ActiveRecord
         return [];
     }
 
-    /* ===== Получить данные о дз, которое задали определенному студенту. ===== */
-    public function getHomeworkUser(int $userId): array|false|null
-    {
-        return EduHomeworkUsers::find()
-            ->select([
-                'id',
-                'homework_grade',
-                'homework_answer_ids',
-                'homework_answer_comment',
-                'homework_teacher_comment',
-                'status',
-            ])
-            ->where(['homework_id' => $this->id])
-            ->andWhere(['homework_user_id' => $userId])
-            ->asArray()
-            ->one();
-    }
-
     /* ===== Создать / Редактировать дз. ===== */
     public function setEduHomework(array $data, int $userId, bool $isUpdate = false, string $formName = 'EduHomework')
     {
@@ -227,25 +208,7 @@ class EduHomework extends ActiveRecord
                     $this->homework_teacher_id = $userId;
                 }
 
-                if (!empty($this->homework_user_id)) // ----- Если дз для определенного.
-                {
-                    $userIds = [$this->homework_user_id];
-                    $groupUser = GroupsUsers::findOne(['user_id' => $this->homework_user_id]);
-                    if (!$groupUser)
-                    {
-                        throw new \Exception('Error No Group User');
-                    }
-
-                    $this->homework_group_id = $groupUser->group_id;
-                }
-                else if (!empty($this->homework_group_id)) // ----- Если дз для всей группы.
-                {
-                    $userIds = GroupsUsers::getUsersInGroup($this->homework_group_id, null, true);
-                }
-                else
-                {
-                    throw new \Exception('Error Empty User ID || Empty Group ID');
-                }
+                $userIds = GroupsUsers::getUsersInGroup($this->homework_group_id, null, true);
 
                 if (empty($userIds))
                 {
@@ -265,6 +228,7 @@ class EduHomework extends ActiveRecord
             }
             catch (\Throwable $e)
             {
+                //Yii::$app->session->setFlash('error', $e->getMessage());
                 $transaction->rollBack();
                 return false;
             }

@@ -41,19 +41,30 @@ class Menu
                             self::KEY_URL   => Url::to('/filehub/default/my'),
                         ],
                     ],
-                ],
+                ]
+            ];
 
-                [
+            /** ===== НАЧАЛО: ДЛЯ УЧЕНИКОВ. ===== */
+            if ( array_key_exists(User::ROLE_USER, $userRoles) )
+            {
+                $sideBare[] = [
                     self::KEY_LABEL => Yii::t('app', 'Дз'),
                     self::KEY_CODE  => false,
                     self::KEY_ICON  => '<i class="bi bi-receipt"></i>',
-                    self::KEY_URL   => Url::to('/edu/edu-homework/index'),
-                ]
-            ];
+                    self::KEY_URL   => Url::to('/edu/edu-homework/my-homework-student'),
+                ];
+            }
 
             /** ===== НАЧАЛО: ДЛЯ УЧИТЕЛЕЙ / ПЕРЕПОДАВАТЕЛЕЙ. ===== */
             if ( array_key_exists(User::ROLE_TEACHER, $userRoles) )
             {
+                $sideBare[] = [
+                    self::KEY_LABEL => Yii::t('app', 'Дз'),
+                    self::KEY_CODE  => false,
+                    self::KEY_ICON  => '<i class="bi bi-receipt"></i>',
+                    self::KEY_URL   => Url::to('/edu/edu-homework/my-homework-teacher'),
+                ];
+
                 $sideBare[] = [
                     self::KEY_LABEL => Yii::t('app', 'Мои предметы'),
                     self::KEY_CODE  => false,

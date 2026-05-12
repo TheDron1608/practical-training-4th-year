@@ -112,38 +112,40 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 
-    <div class="card mb-3">
-        <div class="card-content">
+    <?php if (!empty($homeworkFiles)): ?>
+        <div class="card mb-3">
+            <div class="card-content">
 
-            <h5 class="filemanager-content__heading"><?= Yii::t('app', 'Файлы') ?></h5>
-            <hr>
+                <h5 class="filemanager-content__heading"><?= Yii::t('app', 'Файлы') ?></h5>
+                <hr>
 
-            <div class="filemanager">
-                <div class="filemanager-content__quick">
-                    <div class="filemanager-content__quick-wrapper" style="margin-top: 0px">
-                        <?php
-                            if (!empty($homeworkFiles))
-                            {
-                                foreach ($homeworkFiles as $file)
+                <div class="filemanager">
+                    <div class="filemanager-content__quick">
+                        <div class="filemanager-content__quick-wrapper" style="margin-top: 0px">
+                            <?php
+                                if (!empty($homeworkFiles))
                                 {
-                                    $fileHref = Html::a($file['file_title'], [$file['file_patch']], [
-                                        'target'    => '_blank',
-                                        'data-pjax' => 0,
-                                    ]);
+                                    foreach ($homeworkFiles as $file)
+                                    {
+                                        $fileHref = Html::a($file['file_title'], [$file['file_patch']], [
+                                            'target'    => '_blank',
+                                            'data-pjax' => 0,
+                                        ]);
 
-                                    echo $this->renderFile(Yii::getAlias('@app') . '/modules/filehub/components/views/_file_card.php', [
-                                        'fileHref'  => $fileHref,
-                                        'fileSize'  => $file['file_size'],
-                                    ]);
+                                        echo $this->renderFile(Yii::getAlias('@app') . '/modules/filehub/components/views/_file_card.php', [
+                                            'fileHref'  => $fileHref,
+                                            'fileSize'  => $file['file_size'],
+                                        ]);
+                                    }
                                 }
-                            }
-                        ?>
+                            ?>
+                        </div>
                     </div>
                 </div>
-            </div>
 
+            </div>
         </div>
-    </div>
+    <?php endif ?>
 
     <?php if (!empty($model->homework_content)): ?>
         <div class="card">

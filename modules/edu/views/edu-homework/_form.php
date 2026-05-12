@@ -21,18 +21,6 @@ use yii\widgets\ActiveForm;
     <div class="row">
 
         <div class="col-md-6 mb-3">
-            <?= $form->field($model, 'homework_user_id')->widget(Select2::class, [
-                'data'      => User::getUserList(null, User::ROLE_USER),
-                'options'   => [
-                    'placeholder' => '...',
-                ],
-                'pluginOptions' => [
-                    'allowClear' => true
-                ],
-            ])->label(Yii::t('app', 'Студент')) ?>
-        </div>
-
-        <div class="col-md-6 mb-3">
             <?= $form->field($model, 'homework_group_id')->widget(Select2::class, [
                 'data'      => Groups::getGroupList(),
                 'options'   => [
@@ -46,7 +34,7 @@ use yii\widgets\ActiveForm;
 
         <div class="col-md-6 mb-3">
             <?= $form->field($model, 'homework_subject_id')->widget(Select2::class, [
-                'data'      => EduSubjects::getSubjectsList(),
+                'data'      => Yii::$app->user->identity->teacherSubjectsList,
                 'options'   => [
                     'placeholder' => '...',
                 ],
@@ -79,7 +67,7 @@ use yii\widgets\ActiveForm;
         </div>
 
         <div class="mb-3">
-            <?= $form->field($model, 'homework_deadline')->widget(DatePicker::class) ?>
+            <?= $form->field($model, 'homework_deadline')->widget(DatePicker::class, ['dateFormat' => 'yyyy-MM-dd']) ?>
         </div>
 
     </div>

@@ -40,9 +40,7 @@ class EduHomeworkUsersSearch extends EduHomeworkUsers
      */
     public function search($params)
     {
-        $query = EduHomeworkUsers::find()
-            ->joinWith(['homeworkUser']);
-
+        $query = EduHomeworkUsers::find();
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([

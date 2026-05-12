@@ -2,6 +2,7 @@
 
 namespace app\modules\core\models;
 
+use app\modules\edu\models\EduSubjects;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
@@ -467,6 +468,20 @@ class User extends ActiveRecord implements IdentityInterface
     public function getStudentGroup()
     {
         return GroupsUsers::getUserGroups($this->id);
+    }
+
+    public function getTeacherSubjectsList()
+    {
+        $query =
+            EduSubjects::find()
+            ->innerJoin('edu_subjects_groups', '`edu_subjects`.`id` = `edu_subjects_groups`.`subject_id`')
+            ->innerJoin('user', '`edu_subjects_groups`.`teacher_id` = `user`.`id`')
+            ->where(['=', '`user`.`id`', $this->id])
+            ->select(['`edu_subjects`.`id`', '`edu_subjects`.`subject_title`'])
+            ->asArray()
+            ->all();
+
+        return ArrayHelper::map($query, 'id', 'subject_title');
     }
 
     /**

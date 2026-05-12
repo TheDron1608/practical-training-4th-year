@@ -34,20 +34,25 @@ class EduHomeworkController extends Controller
                     'class' => AccessControl::class,
                     'rules' => [
                         [
-                            'actions'   => ['index', 'view'],
+                            'actions'   => ['view'],
                             'allow'     => true,
                             'roles'     => ['@'],
                         ],
                         [
-                            'actions'   => ['user-answer-homework', 'drop-user-answer-homework'],
+                            'actions'   => ['user-answer-homework', 'drop-user-answer-homework', 'my-homework-student'],
                             'allow'     => true,
                             'roles'     => [User::ROLE_USER],
                         ],
                         [
-                            'actions'   => ['create', 'update', 'delete', 'teacher-answer'],
+                            'actions'   => ['create', 'update', 'delete', 'teacher-answer', 'my-homework-teacher'],
                             'allow'     => true,
                             'roles'     => [User::ROLE_TEACHER],
                         ],
+                        [
+                            'actions'   => ['index'],
+                            'allow'     => true,
+                            'roles'     => [User::ROLE_ADMINISTRATOR],
+                        ]
                     ],
                 ],
                 'verbs' => [
@@ -80,7 +85,6 @@ class EduHomeworkController extends Controller
         else
         {
             $searchModel->is_my_homework = 1;
-            $searchModel->homework_user_id = $getUserId;
             $searchModel->status = EduHomework::STATUS_ACTIVE;
         }
 
@@ -92,6 +96,41 @@ class EduHomeworkController extends Controller
             'isTeacher'     => $isTeacher,
         ]);
     }
+
+    public function actionMyHomeworkTeacher()
+    {
+        $getUserId = Yii::$app->user->id;
+        $isTeacher = User::isUserRole($getUserId, User::ROLE_TEACHER);
+
+        $searchModel = new EduHomeworkSearch();
+
+        $searchModel->homework_teacher_id = $getUserId;
+
+        $dataProvider = $searchModel->search($this->request->queryParams);
+
+        return $this->render('myHomeworkTeacher', [
+            'searchModel'   => $searchModel,
+            'dataProvider'  => $dataProvider
+        ]);
+    }
+
+    public function actionMyHomeworkStudent()
+    {
+        $getUserId = Yii::$app->user->id;
+        $isTeacher = User::isUserRole($getUserId, User::ROLE_TEACHER);
+
+        $searchModel = new EduHomeworkSearch();
+
+        $searchModel->homework_teacher_id = $getUserId;
+
+        $dataProvider = $searchModel->search($this->request->queryParams);
+
+        return $this->render('myHomeworkTeacher', [
+            'searchModel'   => $searchModel,
+            'dataProvider'  => $dataProvider
+        ]);
+    }
+
 
     /**
      * Displays a single EduHomework model.

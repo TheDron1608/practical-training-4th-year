@@ -22,7 +22,7 @@ class EduHomeworkSearch extends EduHomework
     public function rules()
     {
         return [
-            [['id', 'homework_teacher_id', 'homework_group_id', 'homework_subject_id', 'homework_answer_file_id', 'homework_user_id', 'created_at', 'updated_at'], 'integer'],
+            [['id', 'homework_teacher_id', 'homework_group_id', 'homework_subject_id', 'homework_answer_file_id', 'created_at', 'updated_at'], 'integer'],
             [['group', 'subject', 'teacher'], 'string'],
             [['homework_file_ids', 'homework_title', 'homework_content', 'homework_deadline', 'homework_options', 'status'], 'safe'],
         ];
@@ -67,8 +67,6 @@ class EduHomeworkSearch extends EduHomework
 
         if ($this->is_my_homework)
         {
-            $query->joinWith(['homeworkUsers'], false)
-                ->where(['homework_user_id' => $this->homework_user_id]);
         }
 
         // grid filtering conditions
