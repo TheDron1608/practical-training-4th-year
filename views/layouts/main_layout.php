@@ -77,7 +77,7 @@ $sidebar = $menu['sideBare'];
             <div class="header-content__wrapper">
                 <?php if (!Yii::$app->user->isGuest): ?>
                     <div class="header-content__logout m-3">
-                        <?= Html::a("Выйти", ["/core/user/logout"], ['class' => 'link link-light']) ?>
+                        <?= Html::a("Выйти (" . (Yii::$app->user->identity->userFio . ")"), ["/core/user/logout"], ['class' => 'link link-light']) ?>
                     </div>
                     <div class="header-content__item header-content__item-active">
                         <?= Html::a("<img src=\"{$img}\" alt=\"\" class=\"avatar-img\">", [Url::to('/core/user/view')], [

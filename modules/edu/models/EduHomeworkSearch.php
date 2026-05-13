@@ -2,6 +2,7 @@
 
 namespace app\modules\edu\models;
 
+use Yii;
 use app\modules\core\models\Groups;
 use app\modules\core\models\User;
 use yii\base\Model;
@@ -17,7 +18,7 @@ class EduHomeworkSearch extends EduHomework
     public $subject;
     public $teacher;
 
-    public int $is_my_homework  = 0;    // ----- Если нужно достать Дз заданное мне.
+    public bool $is_my_homework = false;    // ----- Если нужно достать Дз заданное мне.
 
     public function rules()
     {
@@ -67,6 +68,10 @@ class EduHomeworkSearch extends EduHomework
 
         if ($this->is_my_homework)
         {
+            $userId = Yii::$app->user->id;
+            $query->leftJoin(['groups_users'], "`groups_users`.`user_id` = '$userId'")
+                ->andFilterWhere(["=", "`groups_users`.`user_role`", "user"]);
+            
         }
 
         // grid filtering conditions

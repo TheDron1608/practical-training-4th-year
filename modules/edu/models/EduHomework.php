@@ -245,4 +245,15 @@ class EduHomework extends ActiveRecord
     {
         return $this->homework_teacher_id === $userId;
     }
+
+    public function getAnswer()
+    {
+        return $this->hasOne(EduHomeworkUsers::class, ['id' => 'homework_id'])
+            ->andOnCondition(['homework_user_id' => Yii::$app->user->id]);
+    }
+
+    public function getIsOverdued(): bool
+    {
+        return $this->homework_deadline <= date("Y-m-d");
+    }
 }

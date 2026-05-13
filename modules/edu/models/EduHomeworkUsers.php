@@ -207,4 +207,9 @@ class EduHomeworkUsers extends ActiveRecord
             return false;
         }
     }
+
+    public function getIsAnswered(): bool
+    {
+        return $this->homework_answer_comment != null || $this->homework_answer_ids != null;
+    }
 }

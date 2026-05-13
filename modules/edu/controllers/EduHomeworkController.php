@@ -100,7 +100,6 @@ class EduHomeworkController extends Controller
     public function actionMyHomeworkTeacher()
     {
         $getUserId = Yii::$app->user->id;
-        $isTeacher = User::isUserRole($getUserId, User::ROLE_TEACHER);
 
         $searchModel = new EduHomeworkSearch();
 
@@ -117,15 +116,14 @@ class EduHomeworkController extends Controller
     public function actionMyHomeworkStudent()
     {
         $getUserId = Yii::$app->user->id;
-        $isTeacher = User::isUserRole($getUserId, User::ROLE_TEACHER);
 
         $searchModel = new EduHomeworkSearch();
 
-        $searchModel->homework_teacher_id = $getUserId;
+        $searchModel->is_my_homework = true;
 
         $dataProvider = $searchModel->search($this->request->queryParams);
 
-        return $this->render('myHomeworkTeacher', [
+        return $this->render('myHomeworkStudent', [
             'searchModel'   => $searchModel,
             'dataProvider'  => $dataProvider
         ]);
@@ -157,17 +155,20 @@ class EduHomeworkController extends Controller
         }
         else
         {
-            $getUserHomework = $model->getHomeworkUser($getUserId);
-            $getUserHomework['homework_answer_ids'] = Json::decode($getUserHomework['homework_answer_ids']);
-            if (!empty($getUserHomework['homework_answer_ids']))
+            $getUserHomework = $model->answer;
+            if ($getUserHomework !== null)
             {
-                $getUserHomeworkAnswerFiles = CoreFiles::getFiles($getUserHomework['homework_answer_ids']);
+                $getUserHomework['homework_answer_ids'] = Json::decode($getUserHomework['homework_answer_ids']);
+                if (!empty($getUserHomework['homework_answer_ids']))
+                {
+                    $getUserHomeworkAnswerFiles = CoreFiles::getFiles($getUserHomework['homework_answer_ids']);
+                }
             }
         }
 
-        if ( !$model->isHomeworkTeacher($getUserId) && empty($getUserHomework) )
+        if (!$isTeacher && $getUserHomework !== null && $getUserHomework->homework_user_id == $getUserId)
         {
-            throw new ForbiddenHttpException(MessageHelper::messages()[MessageHelper::KEY_FORBIDDEN]);
+            throw new ForbiddenHttpException("Запрещено смотреть чужое ДЗ");
         }
 
         return $this->render('view', [
@@ -244,8 +245,9 @@ class EduHomeworkController extends Controller
             $eduHomeworkUser = EduHomeworkUsers::findOne(['homework_id' => $id, 'homework_user_id' => $getUserId]);
             if (empty($eduHomeworkUser))
             {
-                Yii::$app->session->setFlash(MessageHelper::KEY_DANGER, MessageHelper::messages()[MessageHelper::KEY_DANGER]);
-                return $this->redirect(['view', 'id' => $id]);
+                $eduHomeworkUser = new EduHomeWorkUsers();
+                $eduHomeworkUser->homework_id = $id;
+                $eduHomeworkUser->homework_user_id = $getUserId;
             }
 
             if ( $this->request->isPost )
@@ -255,17 +257,16 @@ class EduHomeworkController extends Controller
                     if ( $eduHomeworkUser->setHomeworkUser() )
                     {
                         Yii::$app->session->setFlash(MessageHelper::KEY_SUCCESS, MessageHelper::messages()[MessageHelper::KEY_SUCCESS]);
+                        return $this->redirect(['view', 'id' => $id]);
                     }
                     else
                     {
-                        Yii::$app->session->setFlash(MessageHelper::KEY_DANGER, MessageHelper::messages()[MessageHelper::KEY_DANGER]);
+                        Yii::$app->session->setFlash(MessageHelper::KEY_DANGER, implode(', ', $eduHomeworkUser->getFirstErrors()));
                     }
-
-                    return $this->redirect(['view', 'id' => $id]);
                 }
             }
 
-            return $this->renderPartial('_user_answer_homework', [
+            return $this->render('_user_answer_homework', [
                 'model' => $eduHomeworkUser,
             ]);
         }
