@@ -34,6 +34,13 @@ class EduHomeworkUsers extends ActiveRecord
         self::STATUS_WAITING_FOR_VERIFICATION,
         self::STATUS_CHECKED,
     ];
+    
+    const GRADE_LABELS = [
+        2 => 'Неудовлетворительно',
+        3 => 'Удовлетворительно',
+        4 => 'Хорошо',
+        5 => 'Отлично'
+    ];
 
     public static function tableName()
     {
@@ -71,7 +78,7 @@ class EduHomeworkUsers extends ActiveRecord
             'homework_answer_ids'       => Yii::t('app', 'Ответ (Файлы)'),
             'homework_answer_comment'   => Yii::t('app', 'Комментарий к ответу'),
             'homework_grade'            => Yii::t('app', 'Оценка'),
-            'homework_teacher_comment'  => Yii::t('app', 'Комментарий поставщика'),
+            'homework_teacher_comment'  => Yii::t('app', 'Комментарий учителя'),
         ];
     }
 
@@ -208,8 +215,23 @@ class EduHomeworkUsers extends ActiveRecord
         }
     }
 
+    public function GetLabeledGrade(): ?string
+    {
+        if ($this->homework_grade === null) return null;
+        if (!array_key_exists($this->homework_grade, self::GRADE_LABELS)) return null;
+
+        return self::GRADE_LABELS[$this->homework_grade];
+    }
+
     public function getIsAnswered(): bool
     {
         return $this->homework_answer_comment != null || $this->homework_answer_ids != null;
+    }
+
+    public function getIsOverdued(): bool 
+    {
+        return 
+            !$this->getIsAnswered() && 
+            $this->homework->homework_deadline < date("Y-m-d");
     }
 }

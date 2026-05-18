@@ -24,7 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'dataProvider' => $dataProvider,
             'filterModel' => $searchModel,
             'rowOptions' => function($model) {
-                if($model->isOverdued){
+                if($model->isOverdued && ($model->answer === null || !$model->answer->isAnswered)){
                     return ['class' => 'bg-danger border-danger'];
                 }
             },
@@ -52,18 +52,33 @@ $this->params['breadcrumbs'][] = $this->title;
                     'format'    => 'raw',
                     'value' => function (EduHomework $model) {
                         $answer = $model->answer;
+                        $answered = $answer !== null && $answer->isAnswered;
                         if ($model->isOverdued)
                         {
-                            return "Задание просрочено";
+                            if ($answered) 
+                            {   
+                                return "Ожидает оценки";
+                            }
+                            else 
+                            {
+                                return "Задание просрочено";
+                            }
                         }
-                        if ($answer === null || !$answer->isAnswered)
+                        else if ($answered)
                         {
-                            return Html::a("Ожидает ответа", ['/edu/edu-homework/user-answer-homework', 'id' => $model->id], ['class' => 'btn btn-primary']);
+                            return Html::a("Ожидает оценки", ['/edu/edu-homework/user-answer-homework', 'id' => $model->id], ['class' => 'btn btn-secondary']);
                         }
                         else
                         {
-                            return Html::a("Ожидает оценки");
+                            return Html::a("Ожидает ответа", ['/edu/edu-homework/user-answer-homework', 'id' => $model->id], ['class' => 'btn btn-primary']);
                         }
+                    }
+                ],
+                [
+                    'attribute' => 'link',
+                    'format'    => 'raw',
+                    'value' => function (EduHomework $model) {
+                        return Html::a("Просмотр", ['/edu/edu-homework/view', 'id' => $model->id], ['class' => 'btn btn-primary']);
                     }
                 ]
             ],

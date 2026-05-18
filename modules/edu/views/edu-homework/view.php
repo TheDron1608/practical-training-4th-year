@@ -123,14 +123,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="filemanager-content__quick">
                         <div class="filemanager-content__quick-wrapper" style="margin-top: 0px">
                             <?php
-                                if (!empty($homeworkFiles))
+                                foreach ($homeworkFiles as $file)
                                 {
-                                    foreach ($homeworkFiles as $file)
-                                    {
-                                        echo $this->renderFile(Yii::getAlias('@app') . '/modules/filehub/components/views/_file_card.php', [
-                                            'model' => $file
-                                        ]);
-                                    }
+                                    echo $this->renderFile(Yii::getAlias('@app') . '/modules/filehub/components/views/_file_card.php', [
+                                        'model' => $file
+                                    ]);
                                 }
                             ?>
                         </div>
@@ -169,47 +166,46 @@ $this->params['breadcrumbs'][] = $this->title;
                             }
                         ],
 
-                        'homework_grade',
-
                         [
-                            'label'     => Yii::t('app', 'Ответил ли студент'),
+                            'label'     => Yii::t('app', 'Группа'),
                             'format'    => 'raw',
                             'value' => function (EduHomeworkUsers $model) {
-                                return !empty($model->homework_answer_ids) || !empty($model->homework_answer_comment)
-                                    ? Yii::t('app', 'Yes')
-                                    : Yii::t('app', '---');
+                                return $model->homeworkUser->studentGroup[0]['group']['group_title'];
                             }
                         ],
 
                         [
-                            'attribute' => 'status',
-                            'label' => Yii::t('app', 'Статус'),
+                            'label'     => Yii::t('app', 'Оценка'),
                             'format'    => 'raw',
                             'value' => function (EduHomeworkUsers $model) {
-                                return EduHomeworkUsers::getStatusType()[$model->status];
-                            }
-                        ],
-
-                        [
-                            'class' => ActionColumn::class,
-                            'urlCreator' => function ($action, EduHomeworkUsers $model, $key, $index, $column) {
-                                return Url::toRoute([$action, 'id' => $model->id]);
-                            },
-                            'template' => "{view}",
-                            'buttons' => [
-                                'view' => function ($url, EduHomeworkUsers $model)  {
-                                    if ($model->status == EduHomeworkUsers::STATUS_WAITING_FOR_VERIFICATION)
-                                    {
-                                        return Html::a('<i class="bi bi-clipboard-check"></i>', false, [
-                                            'data-bs-toggle'    => 'modal',
-                                            'data-bs-target'    => '#my-modal',
-                                            'id'                => 'upload-modal-button',
-                                            'value'             => Url::to([ '/edu/edu-homework/teacher-answer', 'homeworkId' => $model->homework_id, 'userId' => $model->homework_user_id ]),
-                                        ]);
-                                    }
+                                if ($model->homework_grade !== null)
+                                {
+                                    return Html::a(
+                                        $model->GetLabeledGrade(),
+                                        ['/edu/edu-homework/teacher-answer', 'homeworkId' => $model->homework_id, 'userId' => $model->homework_user_id],
+                                        ['class' => 'btn btn-secondary']
+                                    );
                                 }
-                            ],
+                                else if ($model->getIsAnswered())
+                                {
+                                    return Html::a(
+                                        'Ожидает оценки',
+                                        ['/edu/edu-homework/teacher-answer', 'homeworkId' => $model->homework_id, 'userId' => $model->homework_user_id],
+                                        ['class' => 'btn btn-primary']
+                                    );
+                                }
+                                else if ($model->getIsOverdued())
+                                {
+                                    return "Задание просрочено";
+                                }
+                                else 
+                                {
+                                    return "Ответ не прикреплен";
+                                }
+                            }
                         ],
+
+                        'homework_teacher_comment'
                     ],
                 ]);
             }
@@ -227,7 +223,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
                 else
                 {
-                    echo $this->render('_answer', ['model' => $getUserHomework, 'answerFiles' => $getUserHomeworkAnswerFiles]);
+                    echo $this->render('_answer', [
+                        'model'          => $getUserHomework, 
+                        'answerFiles'   => $getUserHomeworkAnswerFiles,
+                        'allowEdit'     => !$isTeacher
+                        ]);
                 }
             }
         ?>

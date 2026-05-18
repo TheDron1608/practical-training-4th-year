@@ -7,13 +7,13 @@ use yii\helpers\Url;
 
 /** @var app\modules\edu\models\EduHomeworkUsers $model */
 /** @var array $answerFiles */
+/** @var bool $allowEdit */
 
 ?>
 
 
 <div class="card">
     <div class="card-content">
-    
         <h5 class="filemanager-content__heading">Ответ</h5>
 
         <hr>
@@ -37,10 +37,17 @@ use yii\helpers\Url;
 
         <hr>
 
-        <?php if ($model['status'] == EduHomeworkUsers::STATUS_WAITING_FOR_VERIFICATION): ?>
-            <div class='mt-3'>
+        <?php if ($model['status'] == EduHomeworkUsers::STATUS_WAITING_FOR_VERIFICATION && isset($allowEdit) && $allowEdit): ?>
+            <div class='mt-3 d-flex'>
                 <?= Html::a('
-                    <div class="button button__icon button__gray filemanager-content__header-button">
+                    <div class="button button__icon button__gray filemanager-content__header-button m-1">
+                        <i class="bi bi-pencil"></i>
+                    </div>
+                    ', Url::to([ '/edu/edu-homework/user-answer-homework', 'id' => $model['homework_id'] ])
+                ) ?>
+
+                <?= Html::a('
+                    <div class="button button__icon button__gray filemanager-content__header-button m-1">
                         <i class="bi bi-trash"></i>
                     </div>
                     ', [ Url::to('/edu/edu-homework/drop-user-answer-homework'), 'userAnswerHomeworkId' => $model['id'] ], [
@@ -48,8 +55,7 @@ use yii\helpers\Url;
                     'data' => [
                         'method'    => 'POST',
                         'confirm'   => MessageHelper::messages()[MessageHelper::KEY_CONFIRM],
-                    ],
-        
+                    ]
                 ]);
                 ?>
             </div>

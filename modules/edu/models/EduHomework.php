@@ -104,6 +104,8 @@ class EduHomework extends ActiveRecord
             'teacher'                   => Yii::t('app', 'Учитель'),
             'group'                     => Yii::t('app', 'Группы'),
             'subject'                   => Yii::t('app', 'Предметы'),
+            'answer'                    => Yii::t('app', 'Ответ'),
+            'link'                      => Yii::t('app', 'Ссылка')
         ];
     }
 
@@ -166,6 +168,7 @@ class EduHomework extends ActiveRecord
         {
             return CoreFiles::find()
                 ->select([
+                    'id',
                     'file_title',
                     'file_patch',
                     'file_size',
@@ -208,12 +211,7 @@ class EduHomework extends ActiveRecord
                     $this->homework_teacher_id = $userId;
                 }
 
-                $userIds = GroupsUsers::getUsersInGroup($this->homework_group_id, null, true);
-
-                if (empty($userIds))
-                {
-                    throw new \Exception('Error Empty Array');
-                }
+                $userIds = GroupsUsers::getUsersInGroup($this->homework_group_id, null, true, User::ROLE_USER);
 
                 if (!$this->save())
                 {
@@ -221,10 +219,7 @@ class EduHomework extends ActiveRecord
                 }
 
                 // ----- Задать дз некому множеству.
-                if ( !EduHomeworkUsers::addHomeworkTheWholeGroup($userIds, $this->id) )
-                {
-                    throw new \Exception('Error');
-                }
+                EduHomeworkUsers::addHomeworkTheWholeGroup($userIds, $this->id);
             }
             catch (\Throwable $e)
             {

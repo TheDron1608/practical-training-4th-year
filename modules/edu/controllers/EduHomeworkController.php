@@ -169,7 +169,7 @@ class EduHomeworkController extends Controller
         {
             throw new ForbiddenHttpException("Запрещено смотреть чужое ДЗ");
         }
-
+        
         return $this->render('view', [
             'model'                         => $model,
             'homeworkFiles'                 => $model->getHomeworkFiles(),
@@ -341,7 +341,7 @@ class EduHomeworkController extends Controller
             return $this->redirect(['view', 'id' => $homeworkId]);
         }
 
-        return $this->renderPartial('_teacher_answer', [
+        return $this->render('_teacher_answer', [
             'model'         => $eduHomeworkUser,
             'answerFiles'   => $answerFiles,
         ]);

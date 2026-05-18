@@ -96,22 +96,35 @@ class GroupsUsers extends \yii\db\ActiveRecord
     }
 
     /* ===== Получить ids пользователей в группе. ===== */
-    public static function getUsersInGroup(int $groupId, ?array $dropUserIds = null, bool $isIds = false)
+    public static function getUsersInGroup(int $groupId, ?array $dropUserIds = null, bool $isIds = false, $role = null)
     {
         if ($isIds)
         {
-            return self::find()
+            $query = self::find()
                 ->select('user_id')
-                ->where(['group_id' => $groupId])
-                ->column();
-        }
+                ->where(['group_id' => $groupId]);
 
-        return self::find()
-            ->select(['user_id', 'user_role'])
-            ->where(['group_id' => $groupId])
-            ->andFilterWhere(['NOT IN', 'user_id', $dropUserIds])
-            ->asArray()
-            ->all();
+            if ($role !== null) 
+            {
+                $query->andFilterWhere(['=', 'user_role', $role]);
+            }
+
+            return $query->column();
+        }
+        else 
+        {
+            $query = self::find()
+                ->select(['user_id', 'user_role'])
+                ->where(['group_id' => $groupId])
+                ->andFilterWhere(['NOT IN', 'user_id', $dropUserIds]);
+
+            if ($role !== null) 
+            {
+                $query->andFilterWhere(['=', 'user_role', $role]);
+            }
+
+            return $query->asArray()->all();
+        }
     }
 
     /* ===== Добавить пользователей в группу. ===== */

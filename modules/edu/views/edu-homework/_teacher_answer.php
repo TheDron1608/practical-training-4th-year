@@ -1,5 +1,6 @@
 <?php
 
+use app\modules\edu\models\EduHomeworkUsers;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
@@ -56,11 +57,13 @@ use yii\widgets\ActiveForm;
 
     <div class="mb-3">
         <?= $form->field($model, 'homework_grade')->radioList([
-            2 => 2,
-            3 => 3,
-            4 => 4,
-            5 => 5,
-        ]) ?>
+            2 => EduHomeworkUsers::GRADE_LABELS[2],
+            3 => EduHomeworkUsers::GRADE_LABELS[3],
+            4 => EduHomeworkUsers::GRADE_LABELS[4],
+            5 => EduHomeworkUsers::GRADE_LABELS[5]
+            ],
+            ['separator' => '<br>']
+            ) ?>
     </div>
 
     <div>
