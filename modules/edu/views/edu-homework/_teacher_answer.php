@@ -24,14 +24,8 @@ use yii\widgets\ActiveForm;
                             {
                                 foreach ($answerFiles as $file)
                                 {
-                                    $fileHref = Html::a($file['file_title'], [$file['file_patch']], [
-                                        'target'    => '_blank',
-                                        'data-pjax' => 0,
-                                    ]);
-
                                     echo $this->renderFile(Yii::getAlias('@app') . '/modules/filehub/components/views/_file_card.php', [
-                                        'fileHref'  => $fileHref,
-                                        'fileSize'  => $file['file_size'],
+                                        'model' => $file
                                     ]);
                                 }
                             }

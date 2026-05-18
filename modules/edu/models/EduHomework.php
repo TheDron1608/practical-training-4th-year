@@ -248,12 +248,12 @@ class EduHomework extends ActiveRecord
 
     public function getAnswer()
     {
-        return $this->hasOne(EduHomeworkUsers::class, ['id' => 'homework_id'])
+        return $this->hasOne(EduHomeworkUsers::class, ['homework_id' => 'id'])
             ->andOnCondition(['homework_user_id' => Yii::$app->user->id]);
     }
 
     public function getIsOverdued(): bool
     {
-        return $this->homework_deadline <= date("Y-m-d");
+        return $this->homework_deadline < date("Y-m-d");
     }
 }

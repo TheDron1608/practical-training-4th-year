@@ -127,14 +127,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                 {
                                     foreach ($homeworkFiles as $file)
                                     {
-                                        $fileHref = Html::a($file['file_title'], [$file['file_patch']], [
-                                            'target'    => '_blank',
-                                            'data-pjax' => 0,
-                                        ]);
-
                                         echo $this->renderFile(Yii::getAlias('@app') . '/modules/filehub/components/views/_file_card.php', [
-                                            'fileHref'  => $fileHref,
-                                            'fileSize'  => $file['file_size'],
+                                            'model' => $file
                                         ]);
                                     }
                                 }
@@ -233,103 +227,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
                 else
                 {
-                    echo "
-                        <div class=\"card\">
-                            <div class=\"card-content\">
-                            
-                                <h5 class=\"filemanager-content__heading\"> ". Yii::t('app', 'Ответы') ." </h5>
-                    ";
-
-                    if (!empty($getUserHomeworkAnswerFiles))
-                    {
-                        echo "
-                            <hr>
-                            <div class=\"filemanager\">
-                                    <div class=\"filemanager-content__quick\">
-                                        <div class=\"filemanager-content__quick-wrapper\" style=\"margin-top: 0px\">
-                        ";
-
-                        foreach ($getUserHomeworkAnswerFiles as $file)
-                        {
-                            $fileHref = Html::a($file['file_title'], [$file['file_patch']], [
-                                'target'    => '_blank',
-                                'data-pjax' => 0,
-                            ]);
-
-                            echo $this->renderFile(Yii::getAlias('@app') . '/modules/filehub/components/views/_file_card.php', [
-                                'fileHref'  => $fileHref,
-                                'fileSize'  => $file['file_size'],
-                            ]);
-                        }
-
-                        echo "
-                                    </div>
-                                </div>
-                            </div>
-                        ";
-                    }
-
-                        echo "
-                            <hr>
-                            <div>
-                                {$getUserHomework['homework_answer_comment']}
-                            </div>
-                        ";
-
-                    echo "
-                            </div>
-                        </div>
-                    ";
-
-                    if ( $getUserHomework['status'] == EduHomeworkUsers::STATUS_WAITING_FOR_VERIFICATION )
-                    {
-                        $dropUserAnswerHomeworkHref = Html::a('
-                            <div class="button button__icon button__gray filemanager-content__header-button">
-                                <i class="bi bi-trash"></i>
-                            </div>
-                            ', [ Url::to('/edu/edu-homework/drop-user-answer-homework'), 'userAnswerHomeworkId' => $getUserHomework['id'] ], [
-
-                            'data' => [
-                                'method'    => 'POST',
-                                'confirm'   => MessageHelper::messages()[MessageHelper::KEY_CONFIRM],
-                            ],
-
-                        ]);
-
-                        echo "<div class='mt-3'>{$dropUserAnswerHomeworkHref}</div>";
-                    }
+                    echo $this->render('_answer', ['model' => $getUserHomework, 'answerFiles' => $getUserHomeworkAnswerFiles]);
                 }
             }
         ?>
     </div>
 
 </div>
-
-<?php
-
-Modal::begin([
-    'id'   => 'my-modal',
-    'size' => 'modal-lg'
-]);
-
-Pjax::begin(['id' => 'my-modal-content', 'timeout' => FALSE, 'enablePushState' => FALSE,]);
-
-Pjax::end();
-
-Modal::end();
-
-$js = <<< JS
-    $("document").ready(function () {
-        
-        $(document).on('click', '#upload-modal-button', function(){
-            $('#my-modal').find('#my-modal-content').load($(this).attr('value'), $(this));
-            
-            $("#my-modal").on("pjax:end", function(data) {
-                $.pjax.reload({container:"#opp-modules"});  
-            });   
-        });
-        
-    });
-JS;
-
-$this->registerJs($js,View::POS_READY, null);

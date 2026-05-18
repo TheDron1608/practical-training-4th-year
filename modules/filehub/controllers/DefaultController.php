@@ -10,6 +10,7 @@ use app\modules\filehub\models\FilehubFoldersSearch;
 use Yii;
 use yii\base\DynamicModel;
 use yii\web\Controller;
+use yii\web\Response;
 use yii\web\UploadedFile;
 
 /**
@@ -153,5 +154,19 @@ class DefaultController extends Controller
             'getFolders'            => $getFolders,
             'isAdministrationSite'  => $isAdministrationSite,
         ]);
+    }
+
+    public function actionDownloadFile($id)
+    {
+        $file = CoreFiles::getFile($id);
+
+        if ($file !== null)
+        {
+            return Yii::$app->response->sendFile(Yii::getAlias('@app/web') . $file['file_patch'], $file['file_title']);
+        }
+        else 
+        {
+            echo "file not found";
+        }
     }
 }

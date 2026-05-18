@@ -116,6 +116,7 @@ class CoreFiles extends ActiveRecord
     {
         return self::find()
             ->select([
+                'id',
                 'file_title',
                 'file_patch',
                 'file_comment',
@@ -125,6 +126,22 @@ class CoreFiles extends ActiveRecord
             ->asArray()
             ->all();
     }
+
+    public static function getFile(int $fileId): array
+    {
+        return self::find()
+            ->select([
+                'id',
+                'file_title',
+                'file_patch',
+                'file_comment',
+                'file_size',
+            ])
+            ->where(['=', 'id', $fileId])
+            ->asArray()
+            ->one();
+    }
+
 
     /* ===== Множественная загрузка файлов. ===== */
     public static function multipleUploadFiles(array $files, ?int $userId = null, string $dir = self::DIR_UPLOADED_FILES, string $code = self::CODE_EDU, ?string $comment = null, ?int $folderId = null): array

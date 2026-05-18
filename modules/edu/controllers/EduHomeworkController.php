@@ -39,12 +39,12 @@ class EduHomeworkController extends Controller
                             'roles'     => ['@'],
                         ],
                         [
-                            'actions'   => ['user-answer-homework', 'drop-user-answer-homework', 'my-homework-student'],
+                            'actions'   => ['user-answer-homework', 'drop-user-answer-homework', 'my-homework-student', 'download'],
                             'allow'     => true,
                             'roles'     => [User::ROLE_USER],
                         ],
                         [
-                            'actions'   => ['create', 'update', 'delete', 'teacher-answer', 'my-homework-teacher'],
+                            'actions'   => ['create', 'update', 'delete', 'teacher-answer', 'my-homework-teacher', 'download'],
                             'allow'     => true,
                             'roles'     => [User::ROLE_TEACHER],
                         ],
@@ -158,7 +158,6 @@ class EduHomeworkController extends Controller
             $getUserHomework = $model->answer;
             if ($getUserHomework !== null)
             {
-                $getUserHomework['homework_answer_ids'] = Json::decode($getUserHomework['homework_answer_ids']);
                 if (!empty($getUserHomework['homework_answer_ids']))
                 {
                     $getUserHomeworkAnswerFiles = CoreFiles::getFiles($getUserHomework['homework_answer_ids']);
@@ -166,7 +165,7 @@ class EduHomeworkController extends Controller
             }
         }
 
-        if (!$isTeacher && $getUserHomework !== null && $getUserHomework->homework_user_id == $getUserId)
+        if (!$isTeacher && $getUserHomework !== null && $getUserHomework->homework_user_id != $getUserId)
         {
             throw new ForbiddenHttpException("Запрещено смотреть чужое ДЗ");
         }

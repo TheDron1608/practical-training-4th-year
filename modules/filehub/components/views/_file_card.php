@@ -1,17 +1,20 @@
 <?php
 
-/** @var mixed $fileHref */
+use app\modules\core\models\helpers\FileHelper;
+use yii\helpers\Html;
+use yii\helpers\Url;
+
 /** @var \app\modules\core\models\CoreFiles $model */
-/** @var int $fileSize */
+$filePath = Html::encode($model['file_title'], $model['file_patch']);
 
 ?>
 
 <div class="file">
-    <div class="file-icon__wrapper">
+    <a href="<?= Url::to(['/filehub/download-file', 'id' => $model['id']], 'https') ?>" class="file-icon__wrapper" download>
         <span class="file-icon"><i class="bi bi-file-earmark-arrow-down"></i></span>
-    </div>
+    </a>
     <div class="file-content">
-        <h5 class="file-content__heading"><?= $fileHref ?></h5>
-        <p class="file-content__dscrp"><?= $fileSize ?> BIT</p>
+        <h5 class="file-content__heading"><?= $filePath ?></h5>
+        <p class="file-content__dscrp"><?= FileHelper::formatSizeUnits($model['file_size']) ?></p>
     </div>
 </div>
