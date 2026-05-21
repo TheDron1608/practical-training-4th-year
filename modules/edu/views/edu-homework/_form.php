@@ -24,6 +24,7 @@ use yii\widgets\ActiveForm;
             <?= $form->field($model, 'homework_group_id')->widget(Select2::class, [
                 'data'      => Groups::getGroupList(),
                 'options'   => [
+                    'id'        => 'group-input',
                     'placeholder' => '...',
                 ],
                 'pluginOptions' => [
@@ -36,6 +37,7 @@ use yii\widgets\ActiveForm;
             <?= $form->field($model, 'homework_subject_id')->widget(Select2::class, [
                 'data'      => Yii::$app->user->identity->teacherSubjectsList,
                 'options'   => [
+                    'id'        => 'subject-input',
                     'placeholder' => '...',
                 ],
                 'pluginOptions' => [
@@ -44,7 +46,15 @@ use yii\widgets\ActiveForm;
             ]) ?>
         </div>
 
-        <div class="col-md-6 mb-3">
+        <div class="mb-3">
+            <?= $form->field($model, 'homework_title')->textInput(['maxlength' => true]) ?>
+        </div>
+        
+        <div class="mb-3">
+            <?= $form->field($model, 'homework_content')->textarea(['maxlength' => true]) ?>
+        </div>
+
+        <div class="col-md-12 mb-3">
             <?= $form->field($model, 'homework_files')->widget(FileInput::class, [
                 'options' => [
                     'multiple'=>true
@@ -56,14 +66,6 @@ use yii\widgets\ActiveForm;
                     'showUpload'    => false
                 ]
             ])->label(Yii::t('app', 'Файлы')) ?>
-        </div>
-
-        <div class="mb-3">
-            <?= $form->field($model, 'homework_title')->textInput(['maxlength' => true]) ?>
-        </div>
-
-        <div class="mb-3">
-            <?= $form->field($model, 'homework_content')->textarea(['maxlength' => true]) ?>
         </div>
 
         <div class="mb-3">
@@ -81,3 +83,39 @@ use yii\widgets\ActiveForm;
     <?php ActiveForm::end(); ?>
 
 </div>
+
+<script>
+    const groupInput = document.getElementById("group-input");
+    const subjectInput = document.getElementById("subject-input");
+
+    let groupsSubjects = {};
+    let groupOptions;
+
+    <?php foreach (Groups::find()->all() as $group): ?>
+        groupOptions = [];
+        <?php foreach (Yii::$app->user->identity->teacherSubjects as $subject): ?>
+            <?php if ($subject->getSubjectIsInGroup($group)): ?>
+                groupOptions.push(new Option('<?= $subject->subject_title ?>', '<?=$subject->id ?>'));
+            <?php endif ?>
+        <?php endforeach ?>
+        groupsSubjects['<?= $group->id ?>'] = groupOptions;
+    <?php endforeach ?>
+
+    groupInput.onchange = (event) => {
+        updateSubjectInput(event.target.value);
+    };
+
+    updateSubjectInput(groupInput.value);
+    
+    function updateSubjectInput(value)
+    {
+        subjectInput.innerHTML = ''; 
+        
+        if (value)
+        {
+            groupsSubjects[value].forEach(elem => {
+                subjectInput.add(elem);
+            });
+        }
+    }
+</script>

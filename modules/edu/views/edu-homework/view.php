@@ -41,14 +41,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="icon">
                         <?= Html::a('<i class="bi bi-pencil-square"></i>', ['update', 'id' => $model->id]) ?>
                     </div>
-<!--                    <div class="icon">-->
-<!--                        --><?//= Html::a('<i class="bi bi-trash"></i>', ['delete', 'id' => $model->id], [
-//                            'data' => [
-//                                'confirm' => MessageHelper::messages()[MessageHelper::KEY_CONFIRM],
-//                                'method' => 'post',
-//                            ],
-//                        ]) ?>
-<!--                    </div>-->
                 </div>
             <?php endif; ?>
 
@@ -196,11 +188,19 @@ $this->params['breadcrumbs'][] = $this->title;
                                 }
                                 else if ($model->getIsOverdued())
                                 {
-                                    return "Задание просрочено";
+                                    return Html::a(
+                                        'Задание просрочено',
+                                        ['/edu/edu-homework/teacher-answer', 'homeworkId' => $model->homework_id, 'userId' => $model->homework_user_id],
+                                        ['class' => 'btn btn-danger']
+                                    );
                                 }
                                 else 
                                 {
-                                    return "Ответ не прикреплен";
+                                    return Html::a(
+                                        'Задание не прикреплено',
+                                        ['/edu/edu-homework/teacher-answer', 'homeworkId' => $model->homework_id, 'userId' => $model->homework_user_id],
+                                        ['class' => 'btn btn-warning']
+                                    );
                                 }
                             }
                         ],

@@ -470,6 +470,11 @@ class User extends ActiveRecord implements IdentityInterface
         return GroupsUsers::getUserGroups($this->id);
     }
 
+    public function getTeacherSubjects() {
+        return $this->hasMany(EduSubjects::class, ['id' => 'subject_id'])
+        ->viaTable("edu_subjects_groups", ['teacher_id' => 'id']);
+    }
+
     public function getTeacherSubjectsList()
     {
         $query =

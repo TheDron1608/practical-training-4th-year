@@ -150,4 +150,9 @@ class EduSubjects extends ActiveRecord
     {
         return $this->hasOne(EduCycle::class, ['id' => 'cycle_id']);
     }
+
+    public function getSubjectIsInGroup($group): bool
+    {
+        return $this->getSubjectGroups()->where(['=',  'group_id', $group->id])->count() > 0; 
+    }
 }

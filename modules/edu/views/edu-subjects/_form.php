@@ -40,7 +40,7 @@ use yii\widgets\ActiveForm;
 
         <div class="mb-3">
             <?= $form->field($model, 'temp_qualification_input')->widget(MultipleInput::class, [
-                'allowEmptyList'    => false,
+                'allowEmptyList'    => true,
                 'enableGuessTitle'  => true,
                 'addButtonPosition' => MultipleInput::POS_HEADER,
                 'columns' => [
@@ -74,7 +74,7 @@ use yii\widgets\ActiveForm;
 
         <div class="mb-3">
             <?= $form->field($model, 'temp_group_input')->widget(MultipleInput::class, [
-                'allowEmptyList'    => false,
+                'allowEmptyList'    => true,
                 'enableGuessTitle'  => true,
                 'addButtonPosition' => MultipleInput::POS_HEADER,
                 'columns' => [

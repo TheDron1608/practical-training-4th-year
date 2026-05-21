@@ -54,6 +54,7 @@ class EduHomeworkUsers extends ActiveRecord
         return [
             [['homework_id', 'homework_user_id'], 'required'],
             [['homework_id', 'homework_user_id', 'homework_grade'], 'integer'],
+            [['allow_overdue'], 'boolean'],
             [['homework_teacher_comment', 'homework_answer_comment'], 'string', 'max' => 2048],
             [['homework_id'], 'exist', 'skipOnError' => true, 'targetClass' => EduHomework::class, 'targetAttribute' => ['homework_id' => 'id']],
             [['homework_user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['homework_user_id' => 'id']],
@@ -79,6 +80,7 @@ class EduHomeworkUsers extends ActiveRecord
             'homework_answer_comment'   => Yii::t('app', 'Комментарий к ответу'),
             'homework_grade'            => Yii::t('app', 'Оценка'),
             'homework_teacher_comment'  => Yii::t('app', 'Комментарий учителя'),
+            'allow_overdue'             => Yii::t('app', 'Разрешить сдавать просроченное задание')
         ];
     }
 
@@ -232,6 +234,7 @@ class EduHomeworkUsers extends ActiveRecord
     {
         return 
             !$this->getIsAnswered() && 
+            !$this->allow_overdue &&
             $this->homework->homework_deadline < date("Y-m-d");
     }
 }

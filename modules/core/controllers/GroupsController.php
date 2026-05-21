@@ -148,7 +148,7 @@ class GroupsController extends Controller
 
         $getUserId = Yii::$app->user->id;
 
-        if ( $this->request->isPost && $model->setGroup($this->request->post(), $getUserId, true) )
+        if ( $this->request->isPost && $model->setGroup($this->request->post(), $getUserId, true))
         {
             return $this->redirect(['view', 'id' => $model->id]);
         }
