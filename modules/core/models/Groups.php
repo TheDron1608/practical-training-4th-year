@@ -206,14 +206,6 @@ class Groups extends ActiveRecord
                 {
                     throw new \Exception('Error No Add Group Users');
                 }
-
-                if (!empty($this->group_subjects))
-                {
-                    if ( !EduSubjectsGroups::addSubjectsInGroup($this->group_subjects, $this->id) )
-                    {
-                        throw new \Exception('Error No Add Items');
-                    }
-                }
             }
             catch (\Throwable $e)
             {

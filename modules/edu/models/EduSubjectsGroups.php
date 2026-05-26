@@ -109,7 +109,7 @@ class EduSubjectsGroups extends ActiveRecord
     }
 
     /* ===== Множественное прикреплении предметов к группе. ===== */
-    public static function addSubjectsInGroup(array $subjectIds, int $groupId): int
+    public static function addSubjectsInGroup(array $subjectIds, int $groupId, $teacherId): int
     {
         self::deleteSubjectsInGroup($groupId);
 
@@ -119,11 +119,12 @@ class EduSubjectsGroups extends ActiveRecord
             $insert[] = [
                 'subject_id'    => $subjectId,
                 'group_id'      => $groupId,
+                'teacher_id'    => $teacherId
             ];
         }
 
         return Yii::$app->db->createCommand()
-            ->batchInsert(self::tableName(), ['subject_id', 'group_id'], $insert)
+            ->batchInsert(self::tableName(), ['subject_id', 'group_id', 'teacher_id'], $insert)
             ->execute();
     }
 

@@ -3,6 +3,7 @@
 namespace app\modules\edu\models;
 
 use JetBrains\PhpStorm\ArrayShape;
+use Override;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
@@ -63,6 +64,20 @@ class EduQualifications extends ActiveRecord
             'code'                  => Yii::t('app', 'Код квалификации'),
             'specialisation'        => Yii::t('app', 'Специальность')
         ];
+    }
+    
+    #[Override]
+    public function delete()
+    {
+        try 
+        {
+            return parent::delete();
+        }
+        catch (yii\db\IntegrityException $e)
+        {
+            $this->status = self::STATUS_DEACTIVATED;
+            return $this->save();
+        }
     }
 
     #[ArrayShape([self::STATUS_ACTIVE => "string", self::STATUS_DEACTIVATED => "string"])]

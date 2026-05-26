@@ -52,16 +52,6 @@ use yii\widgets\ActiveForm;
         ]) ?>
     </div>
 
-    <div class="mb-3">
-        <?= $form->field($model, 'group_subjects')->widget(Select2::class, [
-            'data'      => EduSubjects::getSubjectsList(),
-            'options'   => [
-                'placeholder'   => '...',
-                'multiple'      => true
-            ]
-        ]) ?>
-    </div>
-
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app', 'Сохранить'), [
             'class' => Yii::$app->params['btnSuccessClass'],
