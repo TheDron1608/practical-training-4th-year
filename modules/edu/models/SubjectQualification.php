@@ -3,6 +3,7 @@
 namespace app\modules\edu\models;
 
 use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
 
 /**
  * EduSubjectsSearch represents the model behind the search form of `app\modules\edu\models\EduSubjects`.
@@ -20,6 +21,17 @@ class SubjectQualification extends ActiveRecord
             [['id', 'subject_id', 'qualification_id', 'hours'], 'integer'],
             [['code'], 'string']
         ];
+    }
+
+    public static function getSubjectQualificationsList($subjectId)
+    {
+        $query = self::find()
+            ->select(['id', 'code'])
+            ->where(['=', 'subject_id', $subjectId])
+            ->asArray()
+            ->all();
+
+        return ArrayHelper::map($query, 'id', 'code');
     }
 
     public static function generateMultipleSubjectQualifications($subjectId, $qualificationDatas)

@@ -48,8 +48,8 @@ class EduSubjectsSearch extends EduSubjects
     public function search($params)
     {
         $query = EduSubjects::find()
-            ->leftJoin('edu_subjects_groups', '`edu_subjects`.`id` = `edu_subjects_groups`.`subject_id`')
-            ->leftJoin('subject_qualifications', '`edu_subjects`.`id` = `subject_qualifications`.`subject_id`')
+            ->leftJoin('subject_qualifications', '`subject_qualifications`.`subject_id` = `edu_subjects`.`id`')
+            ->leftJoin('edu_subjects_groups', '`subject_qualifications`.`id` = `edu_subjects_groups`.`subject_qualification_id`')
             ->leftJoin('edu_qualifications', '`edu_qualifications`.`id` = `subject_qualifications`.`qualification_id`');
 
         // add conditions that should always apply here

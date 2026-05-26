@@ -81,7 +81,7 @@ class EduSubjects extends ActiveRecord
 
         if (!empty($this->temp_group_input))
         {
-            EduSubjectsGroups::generateMultipleSubjectGroups($this->id, $this->temp_group_input);
+            EduSubjectsGroups::generateMultipleSubjectGroups($this->temp_group_input);
         }
 
         return parent::afterSave($insert, $changedAttributes);
@@ -110,7 +110,8 @@ class EduSubjects extends ActiveRecord
      */
     public function getEduSubjectsGroups()
     {
-        return $this->hasMany(EduSubjectsGroups::class, ['subject_id' => 'id']);
+        return $this->hasMany(EduSubjectsGroups::class, ['subject_qualification_id' => 'id'])
+            ->viaTable('subject_qualifications', ['subject_id' => 'id']);
     }
 
     /**

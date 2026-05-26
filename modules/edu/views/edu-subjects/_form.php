@@ -6,6 +6,7 @@ use app\modules\edu\models\EduCycle;
 use app\modules\edu\models\EduQualifications;
 use app\modules\edu\models\EduSubjects;
 use app\modules\edu\models\EduSubjectsGroups;
+use app\modules\edu\models\SubjectQualification;
 use kartik\select2\Select2;
 use unclead\multipleinput\MultipleInput;
 use yii\helpers\Html;
@@ -84,6 +85,15 @@ use yii\widgets\ActiveForm;
                         'type'  => Select2::class,
                         'options' => [
                             'data' => Groups::getGroupList()
+                        ]
+                    ],
+
+                    [
+                        'name'  => 'subject_qualification_id',
+                        'title' => Yii::t('app', 'Квалификация'),
+                        'type'  => Select2::class,
+                        'options' => [
+                            'data' => SubjectQualification::getSubjectQualificationsList($model->id)
                         ]
                     ],
 

@@ -479,7 +479,8 @@ class User extends ActiveRecord implements IdentityInterface
     {
         $query =
             EduSubjects::find()
-            ->innerJoin('edu_subjects_groups', '`edu_subjects`.`id` = `edu_subjects_groups`.`subject_id`')
+            ->innerJoin('subject_qualifications', '`subject_qualifications`.`subject_id` = `edu_subjects`.`id`')
+            ->innerJoin('edu_subjects_groups', '`subject_qualifications`.`id` = `edu_subjects_groups`.`subject_qualification_id`')
             ->innerJoin('user', '`edu_subjects_groups`.`teacher_id` = `user`.`id`')
             ->where(['=', '`user`.`id`', $this->id])
             ->select(['`edu_subjects`.`id`', '`edu_subjects`.`subject_title`'])
