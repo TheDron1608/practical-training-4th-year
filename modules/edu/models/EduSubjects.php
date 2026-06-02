@@ -22,9 +22,6 @@ use yii\helpers\ArrayHelper;
  */
 class EduSubjects extends ActiveRecord
 {
-    public $temp_qualification_input;
-    public $temp_group_input;
-
     const STATUS_ACTIVE         = 'active';
     const STATUS_DEACTIVATED    = 'deactivated';
 
@@ -70,21 +67,6 @@ class EduSubjects extends ActiveRecord
             'subject_qualifications'    => Yii::t('app', 'Квалификация'),
             'subject_groups'            => Yii::t('app', 'Группы')
         ];
-    }
-    
-    public function afterSave($insert, $changedAttributes)
-    {
-        if (!empty($this->temp_qualification_input))
-        {
-            SubjectQualification::generateMultipleSubjectQualifications($this->id, $this->temp_qualification_input);
-        }
-
-        if (!empty($this->temp_group_input))
-        {
-            EduSubjectsGroups::generateMultipleSubjectGroups($this->temp_group_input);
-        }
-
-        return parent::afterSave($insert, $changedAttributes);
     }
 
     public function beforeDelete()

@@ -132,6 +132,20 @@ class EduQualificationsController extends Controller
         return $this->redirect(['index']);
     }
 
+    public function actionAddSubjectQualification($id)
+    {
+        $model = $this->findModel($id);
+
+        if ($this->request->isPost)
+        {
+            
+        }
+
+        return $this->render('add-subject-qualification', [
+            'model' => $model,
+        ]);
+    }
+
     /**
      * Finds the EduQualifications model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.

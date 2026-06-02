@@ -39,75 +39,7 @@ use yii\widgets\ActiveForm;
             ]) ?>
         </div>
 
-        <div class="mb-3">
-            <?= $form->field($model, 'temp_qualification_input')->widget(MultipleInput::class, [
-                'allowEmptyList'    => true,
-                'enableGuessTitle'  => true,
-                'addButtonPosition' => MultipleInput::POS_HEADER,
-                'columns' => [
-                    [
-                        'name'  => 'qualification_id',
-                        'title' => Yii::t('app', 'Квалификация'),
-                        'type'  => Select2::class,
-                        'options' => [
-                            'data' => EduQualifications::getEduQualificationsList()
-                        ]
-                    ],
-
-                    [
-                        'name'  => 'code',
-                        'title' => Yii::t('app', 'Индекс'),
-                        'type'  => 'textInput'
-                    ],
-
-                    [
-                        'name'  => 'hours',
-                        'title' => Yii::t('app', 'Часы'),
-                        'type'  => 'textInput',
-                        'options' => [
-                            'type' => 'number',
-                            'min' => 1
-                        ]
-                    ],
-                ]
-            ]) ?>
-        </div>
-
-        <div class="mb-3">
-            <?= $form->field($model, 'temp_group_input')->widget(MultipleInput::class, [
-                'allowEmptyList'    => true,
-                'enableGuessTitle'  => true,
-                'addButtonPosition' => MultipleInput::POS_HEADER,
-                'columns' => [
-                    [
-                        'name'  => 'group_id',
-                        'title' => Yii::t('app', 'Группа'),
-                        'type'  => Select2::class,
-                        'options' => [
-                            'data' => Groups::getGroupList()
-                        ]
-                    ],
-
-                    [
-                        'name'  => 'subject_qualification_id',
-                        'title' => Yii::t('app', 'Квалификация'),
-                        'type'  => Select2::class,
-                        'options' => [
-                            'data' => SubjectQualification::getSubjectQualificationsList($model->id)
-                        ]
-                    ],
-
-                    [
-                        'name'  => 'teacher_id',
-                        'title' => Yii::t('app', 'Учитель'),
-                        'type'  => Select2::class,
-                        'options' => [
-                            'data' => User::getUserList(null, User::ROLE_TEACHER)
-                        ]
-                    ],
-                ]
-            ]) ?>
-        </div>
+        
 
         <div class="mb-3">
             <?= $form->field($model, 'subject_about')->textarea([

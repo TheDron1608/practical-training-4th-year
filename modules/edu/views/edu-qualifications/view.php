@@ -63,6 +63,19 @@ $this->params['breadcrumbs'][] = $this->title;
                 </table>
             </div>
 
+            <div>
+                <h4>Предметы по квалификации</h4>
+                <br>
+
+                <?php foreach ($model->subjectQualifications as $qualification): ?>
+                    <?= $this->render('_subject-qualification', ['model' => $qualification]) ?>
+                <?php endforeach ?>
+                
+                <br>
+                <p>
+                    <?= Html::a(Yii::t('app', 'Создать новый предмет по квалификации'), ['add-subject-qualification', 'id' => $model->id], ['class' => "btn btn-success w-50"]) ?>
+                </p>
+            </div>
         </div>
     </div>
 

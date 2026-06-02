@@ -179,4 +179,9 @@ class EduQualifications extends ActiveRecord
     {
         return $this->hasOne(EduSpecialisation::class, ['id' => 'specialisation_id']);
     }
+
+    public function GetSubjectQualifications()
+    {
+        return $this->hasMany(SubjectQualification::class, ['qualification_id' => 'id']);
+    }
 }
